@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turnos Pro ICV - 2026</title>
+    <title>Turnos ICV 10x10</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #d32f2f; --whatsapp: #25d366; --bg: #f4f7f6; --card-bg: #ffffff; --text: #333; --border: #eee; }
         body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e0e0e0; --border: #333; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; padding: 10px; color: var(--text); transition: 0.3s; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; border-top: 8px solid var(--primary); }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; border-top: 8px solid var(--primary); }
         
-        /* Colores por Grupo */
-        .g-1 { border-top-color: #d32f2f !important; } .g-2 { border-top-color: #1976d2 !important; }
-        .g-3 { border-top-color: #388e3c !important; } .g-4 { border-top-color: #fbc02d !important; }
-        .g-5 { border-top-color: #8e24aa !important; } .g-6 { border-top-color: #00acc1 !important; }
-        
-        .profile-container { position: relative; width: 80px; height: 80px; margin: 0 auto 10px; }
+        .profile-container { position: relative; width: 85px; height: 85px; margin: 0 auto 10px; }
         #profileDisplay { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #ddd; background: #eee; }
-        .photo-input { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; font-size: 14px; }
+        .photo-input { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; font-size: 16px; font-weight: bold; }
         #file-input { display: none; }
 
-        .logo-icv { max-width: 100px; }
-        .brand-name { font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 15px; text-transform: uppercase; }
+        .logo-icv { max-width: 110px; margin-bottom: 5px; }
+        .brand-name { font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; color: var(--primary); }
         
-        .config-section { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); text-align: left; }
+        .config-section { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--border); text-align: left; }
+        body.dark-mode .config-section { background: #252525; }
+        
         label { font-size: 0.65rem; font-weight: 700; color: #777; display: block; margin-bottom: 5px; text-transform: uppercase; }
-        select, input { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.9rem; background: var(--card-bg); color: var(--text); margin-bottom: 10px; }
+        select, input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px; font-size: 0.95rem; background: var(--card-bg); color: var(--text); margin-bottom: 12px; box-sizing: border-box; }
         
-        .result-box { margin: 15px 0; padding: 20px; border-radius: 15px; font-weight: 800; font-size: 1.4rem; border: 3px solid transparent; }
-        .widget { padding: 10px; background: var(--bg); border-radius: 10px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .result-box { margin: 15px 0; padding: 20px; border-radius: 18px; font-weight: 800; font-size: 1.4rem; border: 3px solid transparent; }
+        .widget { padding: 12px; background: var(--bg); border-radius: 12px; font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; border-left: 5px solid var(--primary); text-align: left; }
         
-        .mini-calendar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 10px 0; }
-        .day-box { padding: 8px; border-radius: 6px; font-size: 0.65rem; font-weight: bold; color: white; }
+        .mini-calendar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0; }
+        .day-box { padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; color: white; }
         
-        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; text-decoration: none; }
+        .btn { border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; transition: 0.2s; text-decoration: none; }
         .btn-pdf { background-color: #333; } .btn-ws { background-color: var(--whatsapp); }
 
-        .footer { margin-top: 15px; font-size: 0.65rem; color: #888; border-top: 1px solid var(--border); padding-top: 10px; }
+        .footer { margin-top: 15px; font-size: 0.65rem; color: #888; border-top: 1px solid var(--border); padding-top: 12px; }
     </style>
 </head>
 <body>
 
-<div class="card" id="mainCard">
+<div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <img src="https://www.icv.cl/wp-content/uploads/2021/05/logo-icv.png" alt="ICV" class="logo-icv">
-        <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">🌓</button>
+        <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; cursor:pointer; font-size: 1.3rem;">🌓</button>
     </div>
     
     <div class="profile-container">
@@ -58,59 +55,45 @@
     <div class="brand-name">Ingeniería Civil Vicente</div>
 
     <div class="config-section">
-        <label>Selecciona tu Grupo</label>
-        <select id="grupo" onchange="actualizarGrupo()">
-            <option value="1">Grupo 1 (Vuelve 7 Ene - Día)</option>
-            <option value="2">Grupo 2 (Vuelve 7 Ene - Noche)</option>
-            <option value="3">Grupo 3 (Entra 28 Dic - Día)</option>
-            <option value="4">Grupo 4 (Entra 28 Dic - Noche)</option>
-            <option value="5">Grupo 5 (Entra 23 Dic - Solo Día)</option>
-            <option value="6">Grupo 6 (Entra 2 Ene - Solo Día)</option>
-            <option value="7">Grupo 7 (Personalizado)</option>
-            <option value="8">Grupo 8 (Personalizado)</option>
+        <label>Grupo</label>
+        <select id="grupo" onchange="saveData()">
+            <option value="1">Grupo 1</option>
+            <option value="2">Grupo 2</option>
+            <option value="3">Grupo 3</option>
+            <option value="4">Grupo 4</option>
+            <option value="5">Grupo 5</option>
+            <option value="6">Grupo 6</option>
+            <option value="7">Grupo 7</option>
+            <option value="8">Grupo 8</option>
         </select>
 
-        <div id="customConfig" style="display: none; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-            <label>Fecha Inicio de Turno Día</label>
-            <input type="date" id="inicioPersonalizado" onchange="calcular()">
-        </div>
-
-        <label>Nombre del Trabajador</label>
-        <input type="text" id="nombre" placeholder="Ej: Juan Pérez" oninput="saveData()">
+        <label>Primer día de trabajo (Día 1)</label>
+        <input type="date" id="fechaInicio" onchange="saveData()">
+        
+        <label>Nombre del Colaborador</label>
+        <input type="text" id="nombre" placeholder="Nombre completo" oninput="saveData()">
     </div>
 
-    <div class="form-group">
+    <div style="text-align: left;">
         <label>Fecha a Consultar</label>
         <input type="date" id="fechaBusqueda" onchange="calcular()">
     </div>
 
-    <div id="contadorBajada" class="widget">Calculando...</div>
+    <div id="contadorBajada" class="widget">-</div>
     <div id="resultado" class="result-box"></div>
 
-    <label>Estado del Ciclo (10 días):</label>
+    <label>Ciclo de 10 días:</label>
     <div class="mini-calendar" id="miniCalendar"></div>
 
-    <button class="btn btn-pdf" onclick="descargarPDF()">📄 Generar Reporte PDF</button>
-    <button class="btn btn-ws" onclick="compartirWhatsApp()">💬 Compartir por WhatsApp</button>
+    <button class="btn btn-pdf" onclick="descargarPDF()">📄 Generar PDF</button>
+    <button class="btn btn-ws" onclick="compartirWhatsApp()">💬 WhatsApp</button>
 
     <div class="footer">
-        <strong>INSTAGRAM @Otherbabu.u 2025</strong> | Control de Faena ICV
+        <strong>@Otherbabu.u 2025</strong> | ICV Faena
     </div>
 </div>
 
 <script>
-    // Lógica de fechas base ajustada a tu requerimiento
-    const CONFIG_GRUPOS = {
-        "1": { inicio: "2026-01-07", tipo: "DIA", rotacion: "DLRN" },
-        "2": { inicio: "2026-01-07", tipo: "NOCHE", rotacion: "DLRN" },
-        "3": { inicio: "2025-12-28", tipo: "DIA", rotacion: "DLRN" },
-        "4": { inicio: "2025-12-28", tipo: "NOCHE", rotacion: "DLRN" },
-        "5": { inicio: "2025-12-23", tipo: "DIA", rotacion: "SOLODIA" },
-        "6": { inicio: "2026-01-02", tipo: "DIA", rotacion: "SOLODIA" },
-        "7": { inicio: "", tipo: "DIA", rotacion: "DLRN" },
-        "8": { inicio: "", tipo: "DIA", rotacion: "DLRN" }
-    };
-
     function loadPhoto(event) {
         const reader = new FileReader();
         reader.onload = () => {
@@ -120,58 +103,45 @@
         reader.readAsDataURL(event.target.files[0]);
     }
 
-    function actualizarGrupo() {
-        const g = document.getElementById('grupo').value;
-        const mainCard = document.getElementById('mainCard');
-        mainCard.className = "card g-" + g;
-        
-        // Mostrar config extra para grupos 7 y 8
-        document.getElementById('customConfig').style.display = (g == "7" || g == "8") ? "block" : "none";
-        
-        saveData();
-        calcular();
-    }
-
     function saveData() {
         localStorage.setItem('grupoICV', document.getElementById('grupo').value);
+        localStorage.setItem('inicioICV', document.getElementById('fechaInicio').value);
         localStorage.setItem('nombreICV', document.getElementById('nombre').value);
-        localStorage.setItem('inicioPerso', document.getElementById('inicioPersonalizado').value);
+        calcular();
     }
 
     window.onload = function() {
         if(localStorage.getItem('userPhoto')) document.getElementById('profileDisplay').src = localStorage.getItem('userPhoto');
         if(localStorage.getItem('grupoICV')) document.getElementById('grupo').value = localStorage.getItem('grupoICV');
+        if(localStorage.getItem('inicioICV')) document.getElementById('fechaInicio').value = localStorage.getItem('inicioICV');
         if(localStorage.getItem('nombreICV')) document.getElementById('nombre').value = localStorage.getItem('nombreICV');
-        if(localStorage.getItem('inicioPerso')) document.getElementById('inicioPersonalizado').value = localStorage.getItem('inicioPerso');
         
         document.getElementById('fechaBusqueda').value = new Date().toISOString().split('T')[0];
-        actualizarGrupo();
+        calcular();
     };
 
     function calcular() {
-        const grupoKey = document.getElementById('grupo').value;
-        const config = CONFIG_GRUPOS[grupoKey];
-        const fechaB = document.getElementById('fechaBusqueda').value;
+        const fInicioStr = document.getElementById('fechaInicio').value;
+        const fBuscaStr = document.getElementById('fechaBusqueda').value;
+        const grupo = document.getElementById('grupo').value;
         
-        let fechaRefStr = (grupoKey == "7" || grupoKey == "8") ? document.getElementById('inicioPersonalizado').value : config.inicio;
-        if (!fechaRefStr || !fechaB) return;
+        if (!fInicioStr || !fBuscaStr) return;
 
-        const inicio = new Date(fechaRefStr + "T12:00:00");
-        const busca = new Date(fechaB + "T12:00:00");
+        const inicio = new Date(fInicioStr + "T12:00:00");
+        const busca = new Date(fBuscaStr + "T12:00:00");
         const diff = Math.floor((busca - inicio) / (1000*60*60*24));
         
         const sistema = 10;
-        const cicloTotal = (config.rotacion === "SOLODIA") ? 20 : 40;
+        // Grupos 5, 6, 7 y 8 configurados como 10x10 Solo Día (Ciclo de 20 días)
+        const cicloTotal = (parseInt(grupo) >= 5) ? 20 : 40;
         
-        // Ajuste de desfase si empieza en Noche
         let pos = diff % cicloTotal;
-        if (config.tipo === "NOCHE") pos = (pos + 20) % cicloTotal;
         if (pos < 0) pos += cicloTotal;
 
         const resDiv = document.getElementById('resultado');
         const cont = document.getElementById('contadorBajada');
 
-        if (config.rotacion === "SOLODIA") {
+        if (cicloTotal === 20) {
             if (pos < 10) {
                 actualizarUI("TURNO DÍA ☀️", "#fff3e0", "#ef6c00", "#ff9800");
                 cont.innerText = `Bajas en: ${10 - pos} días`;
@@ -185,17 +155,16 @@
                 cont.innerText = `Bajas en: ${10 - pos} días`;
             } else if (pos < 20) {
                 actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
-                cont.innerText = `Subes en: ${20 - pos} días (a Noche)`;
+                cont.innerText = `Subes a NOCHE en: ${20 - pos} días`;
             } else if (pos < 30) {
                 actualizarUI("TURNO NOCHE 🌙", "#e8eaf6", "#283593", "#3f51b5");
                 cont.innerText = `Bajas en: ${30 - pos} días`;
             } else {
                 actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
-                cont.innerText = `Subes en: ${40 - pos} días (a Día)`;
+                cont.innerText = `Subes a DÍA en: ${40 - pos} días`;
             }
         }
 
-        // Dibujar mini calendario
         const miniCal = document.getElementById('miniCalendar');
         miniCal.innerHTML = "";
         let inicioBloque = Math.floor(pos / 10) * 10;
@@ -207,7 +176,7 @@
             else if (p < 20) d.style.backgroundColor = "#4caf50";
             else if (p < 30) d.style.backgroundColor = "#3f51b5";
             else d.style.backgroundColor = "#4caf50";
-            if ((inicioBloque + i) === pos) d.style.border = "2px solid #333";
+            if ((inicioBloque + i) === pos) d.style.border = "3px solid #333";
             miniCal.appendChild(d);
         }
     }
@@ -219,13 +188,12 @@
         const doc = new jsPDF();
         doc.text("REPORTE ICV - GRUPO " + document.getElementById('grupo').value, 20, 20);
         doc.text("Colaborador: " + document.getElementById('nombre').value, 20, 35);
-        doc.text("Fecha: " + document.getElementById('fechaBusqueda').value, 20, 45);
-        doc.text("Estado: " + document.getElementById('resultado').innerText, 20, 60);
+        doc.text("Estado: " + document.getElementById('resultado').innerText, 20, 50);
         doc.save("Turno_ICV.pdf");
     }
 
     function compartirWhatsApp() {
-        const msj = encodeURIComponent(`*ICV TURNOS*\n*${document.getElementById('nombre').value}*\nFecha: ${document.getElementById('fechaBusqueda').value}\nEstado: *${document.getElementById('resultado').innerText}*\n_@Otherbabu.u_`);
+        const msj = encodeURIComponent(`*TURNO ICV*\n👤 *${document.getElementById('nombre').value}*\n📍 Estado: *${document.getElementById('resultado').innerText}*`);
         window.open(`https://api.whatsapp.com/send?text=${msj}`);
     }
 </script>
