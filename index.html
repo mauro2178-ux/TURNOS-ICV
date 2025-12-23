@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turnos Pro ICV - MultiGrupo</title>
+    <title>Turnos Pro ICV - v3.0</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -27,15 +27,13 @@
         .config-section { background: #fffde7; padding: 10px; border-radius: 12px; margin-bottom: 15px; border: 1px dashed #fbc02d; }
         body.dark-mode .config-section { background: #332b00; border-color: #fbc02d; }
 
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .widget { padding: 8px; background: var(--bg); border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
-        
+        .widget { padding: 8px; background: var(--bg); border-radius: 10px; font-size: 0.7rem; font-weight: 600; margin-bottom: 8px; }
         .result-box { margin: 10px 0; padding: 15px; border-radius: 15px; font-weight: 800; font-size: 1.2rem; border: 3px solid transparent; }
         
         .mini-calendar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 10px 0; }
         .day-box { padding: 6px; border-radius: 6px; font-size: 0.6rem; font-weight: bold; color: white; }
         
-        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; }
+        .btn { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; text-decoration: none; }
         .btn-pdf { background-color: #333; }
         .btn-ws { background-color: var(--whatsapp); }
 
@@ -47,7 +45,7 @@
 <div class="card">
     <div style="display: flex; justify-content: space-between;">
         <img src="https://www.icv.cl/wp-content/uploads/2021/05/logo-icv.png" alt="ICV" class="logo-icv">
-        <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; cursor:pointer;">🌓</button>
+        <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">🌓</button>
     </div>
     
     <div class="profile-container">
@@ -59,22 +57,32 @@
     <div class="brand-name">Ingeniería Civil Vicente</div>
 
     <div class="config-section">
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
             <div style="flex: 1;">
-                <label>Tu Grupo</label>
+                <label>Grupo / Turno</label>
                 <select id="grupo" onchange="saveConfig()">
-                    <option value="A">Grupo A</option>
-                    <option value="B">Grupo B</option>
-                    <option value="C">Grupo C</option>
-                    <option value="D">Grupo D</option>
+                    <option value="A">Grupo 1 (Día/Noche)</option>
+                    <option value="B">Grupo 2 (Día/Noche)</option>
+                    <option value="C">Grupo 3 (Día/Noche)</option>
+                    <option value="D">Grupo 4 (Día/Noche)</option>
+                    <option value="SOLODIA">Grupo 5 (Solo Día ☀️)</option>
                 </select>
             </div>
-            <div style="flex: 1.5;">
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <div style="flex: 1;">
                 <label>Tu 1er día de trabajo</label>
                 <input type="date" id="inicioGrupo" onchange="saveConfig()">
             </div>
+            <div style="flex: 1;">
+                <label>Sistema</label>
+                <select id="sistema" onchange="calcular()">
+                    <option value="4">4x4</option>
+                    <option value="7">7x7</option>
+                    <option value="10" selected>10x10</option>
+                </select>
+            </div>
         </div>
-        <p style="font-size: 0.55rem; margin: 5px 0 0; color: #666;">* Configura esto una sola vez para ajustar tu ciclo.</p>
     </div>
 
     <div class="form-group">
@@ -82,26 +90,22 @@
         <input type="text" id="nombre" placeholder="Nombre completo" oninput="saveConfig()">
     </div>
 
-    <div class="form-group" style="display: flex; gap: 8px;">
-        <div style="flex: 1;"><label>Sistema</label><select id="sistema" onchange="calcular()"><option value="4">4x4</option><option value="7">7x7</option><option value="10" selected>10x10</option><option value="14">14x14</option></select></div>
-        <div style="flex: 1;"><label>Fecha a Consultar</label><input type="date" id="fechaBusqueda" onchange="calcular()"></div>
+    <div class="form-group">
+        <label>Fecha a Consultar</label>
+        <input type="date" id="fechaBusqueda" onchange="calcular()">
     </div>
 
-    <div class="info-grid">
-        <div class="widget" id="contadorBajada">-</div>
-        <div class="widget" id="fechaEspecial">-</div>
-    </div>
-
+    <div id="contadorBajada" class="widget">-</div>
     <div id="resultado" class="result-box"></div>
 
-    <label>Ciclo actual de 10 días:</label>
+    <label id="lblCiclo">Ciclo actual de trabajo:</label>
     <div class="mini-calendar" id="miniCalendar"></div>
 
-    <button class="btn btn-pdf" onclick="descargarPDF()">📄 PDF</button>
-    <button class="btn btn-ws" onclick="compartirWhatsApp()">💬 WhatsApp</button>
+    <button class="btn btn-pdf" onclick="descargarPDF()">📄 Generar Reporte PDF</button>
+    <button class="btn btn-ws" onclick="compartirWhatsApp()">💬 Compartir por WhatsApp</button>
 
     <div class="footer">
-        <strong>@Otherbabu.u 2025</strong> | ICV Faena
+        <strong>@Otherbabu.u 2025</strong> | ICV Faena DMH
     </div>
 </div>
 
@@ -119,66 +123,83 @@
         localStorage.setItem('grupo', document.getElementById('grupo').value);
         localStorage.setItem('inicioGrupo', document.getElementById('inicioGrupo').value);
         localStorage.setItem('nombreUser', document.getElementById('nombre').value);
+        localStorage.setItem('sistema', document.getElementById('sistema').value);
         calcular();
     }
 
     window.onload = function() {
-        // Cargar datos guardados
         if(localStorage.getItem('userPhoto')) document.getElementById('profileDisplay').src = localStorage.getItem('userPhoto');
         if(localStorage.getItem('grupo')) document.getElementById('grupo').value = localStorage.getItem('grupo');
         if(localStorage.getItem('inicioGrupo')) document.getElementById('inicioGrupo').value = localStorage.getItem('inicioGrupo');
         if(localStorage.getItem('nombreUser')) document.getElementById('nombre').value = localStorage.getItem('nombreUser');
+        if(localStorage.getItem('sistema')) document.getElementById('sistema').value = localStorage.getItem('sistema');
         
-        // Fecha por defecto hoy
-        const hoy = new Date().toISOString().split('T')[0];
-        document.getElementById('fechaBusqueda').value = hoy;
-        
+        document.getElementById('fechaBusqueda').value = new Date().toISOString().split('T')[0];
         calcular();
     };
 
     function calcular() {
-        const fechaInicio = document.getElementById('inicioGrupo').value;
-        const fechaBusca = document.getElementById('fechaBusqueda').value;
+        const fInicio = document.getElementById('inicioGrupo').value;
+        const fBusca = document.getElementById('fechaBusqueda').value;
         const sistema = parseInt(document.getElementById('sistema').value);
+        const grupo = document.getElementById('grupo').value;
         
-        if (!fechaInicio || !fechaBusca) return;
+        if (!fInicio || !fBusca) return;
 
-        const inicio = new Date(fechaInicio + "T12:00:00");
-        const busca = new Date(fechaBusca + "T12:00:00");
-        
+        const inicio = new Date(fInicio + "T12:00:00");
+        const busca = new Date(fBusca + "T12:00:00");
         const diff = Math.floor((busca - inicio) / (1000*60*60*24));
-        const cicloTotal = sistema * 4;
+        
+        // Lógica diferenciada: Grupos normales (40 días) vs Solo Día (20 días)
+        const cicloTotal = (grupo === "SOLODIA") ? (sistema * 2) : (sistema * 4);
         let pos = diff % cicloTotal;
         if (pos < 0) pos += cicloTotal;
 
         const resDiv = document.getElementById('resultado');
+        const cont = document.getElementById('contadorBajada');
         resDiv.style.display = "block";
 
-        if (pos < sistema) {
-            actualizarUI("TURNO DÍA ☀️", "#fff3e0", "#ef6c00", "#ff9800");
-            document.getElementById('contadorBajada').innerText = `Bajas en: ${sistema - pos} días`;
-        } else if (pos < sistema * 2) {
-            actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
-            document.getElementById('contadorBajada').innerText = `Subes en: ${(sistema * 2) - pos} días`;
-        } else if (pos < sistema * 3) {
-            actualizarUI("TURNO NOCHE 🌙", "#e8eaf6", "#283593", "#3f51b5");
-            document.getElementById('contadorBajada').innerText = `Bajas en: ${(sistema * 3) - pos} días`;
+        if (grupo === "SOLODIA") {
+            // Lógica Grupo E: Día -> Libre -> (repite)
+            if (pos < sistema) {
+                actualizarUI("TURNO DÍA ☀️", "#fff3e0", "#ef6c00", "#ff9800");
+                cont.innerText = `Bajas en: ${sistema - pos} días`;
+            } else {
+                actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
+                cont.innerText = `Subes en: ${cicloTotal - pos} días`;
+            }
         } else {
-            actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
-            document.getElementById('contadorBajada').innerText = `Subes en: ${(sistema * 4) - pos} días`;
+            // Lógica Estándar: Día -> Libre -> Noche -> Libre
+            if (pos < sistema) {
+                actualizarUI("TURNO DÍA ☀️", "#fff3e0", "#ef6c00", "#ff9800");
+                cont.innerText = `Bajas en: ${sistema - pos} días`;
+            } else if (pos < sistema * 2) {
+                actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
+                cont.innerText = `Subes en: ${(sistema * 2) - pos} días (a Noche)`;
+            } else if (pos < sistema * 3) {
+                actualizarUI("TURNO NOCHE 🌙", "#e8eaf6", "#283593", "#3f51b5");
+                cont.innerText = `Bajas en: ${(sistema * 3) - pos} días`;
+            } else {
+                actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
+                cont.innerText = `Subes en: ${(sistema * 4) - pos} días (a Día)`;
+            }
         }
 
+        // Dibujar calendario de bloque
         const miniCal = document.getElementById('miniCalendar');
         miniCal.innerHTML = "";
         let inicioBloquePos = Math.floor(pos / sistema) * sistema;
         for (let i = 0; i < sistema; i++) {
-            const cPos = (inicioBloquePos + i) % cicloTotal;
+            const cP = (inicioBloquePos + i) % cicloTotal;
             const d = document.createElement('div');
             d.className = "day-box"; d.innerText = i+1;
-            if (cPos < sistema) d.style.backgroundColor = "#ff9800";
-            else if (cPos < sistema * 2) d.style.backgroundColor = "#4caf50";
-            else if (cPos < sistema * 3) d.style.backgroundColor = "#3f51b5";
-            else d.style.backgroundColor = "#4caf50";
+            
+            if (cP < sistema) d.style.backgroundColor = "#ff9800"; // Siempre día en 1er bloque
+            else if (grupo === "SOLODIA") d.style.backgroundColor = "#4caf50"; // Siempre libre en 2do bloque
+            else if (cP < sistema * 2) d.style.backgroundColor = "#4caf50"; // Libre
+            else if (cP < sistema * 3) d.style.backgroundColor = "#3f51b5"; // Noche
+            else d.style.backgroundColor = "#4caf50"; // Libre
+
             if ((inicioBloquePos + i) === pos) d.style.border = "2px solid #333";
             miniCal.appendChild(d);
         }
@@ -189,15 +210,18 @@
     function descargarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("REPORTE DE TURNO - ICV", 10, 10);
-        doc.text("Trabajador: " + document.getElementById('nombre').value, 10, 20);
-        doc.text("Fecha: " + document.getElementById('fechaBusqueda').value, 10, 30);
-        doc.text("Estado: " + document.getElementById('resultado').innerText, 10, 40);
-        doc.save("MiTurno.pdf");
+        doc.setFontSize(18); doc.text("REPORTE DE TURNO ICV 2026", 20, 20);
+        doc.setFontSize(12);
+        doc.text(`Colaborador: ${document.getElementById('nombre').value}`, 20, 40);
+        doc.text(`Grupo: ${document.getElementById('grupo').options[document.getElementById('grupo').selectedIndex].text}`, 20, 50);
+        doc.text(`Fecha: ${document.getElementById('fechaBusqueda').value}`, 20, 60);
+        doc.setFontSize(16); doc.text(`ESTADO: ${document.getElementById('resultado').innerText}`, 20, 80);
+        doc.setFontSize(10); doc.text("Generado por @Otherbabu.u", 20, 110);
+        doc.save("MiTurno_ICV.pdf");
     }
 
     function compartirWhatsApp() {
-        const msj = encodeURIComponent(`*Turno ICV*\n${document.getElementById('nombre').value}\nFecha: ${document.getElementById('fechaBusqueda').value}\nEstado: *${document.getElementById('resultado').innerText}*`);
+        const msj = encodeURIComponent(`*ICV TURNOS*\n👤 *${document.getElementById('nombre').value}*\n📅 Fecha: ${document.getElementById('fechaBusqueda').value}\n📍 Estado: *${document.getElementById('resultado').innerText}*\n_App por @Otherbabu.u_`);
         window.open(`https://api.whatsapp.com/send?text=${msj}`);
     }
 </script>
