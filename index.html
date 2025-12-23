@@ -1,223 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="apple-touch-icon" href="https://www.icv.cl/wp-content/uploads/2021/05/logo-icv.png">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Turnos ICV">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Turnos 2026 - ICV</title>
+    <title>Turnos Pro ICV - 2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #d32f2f;
-            --whatsapp: #25d366;
-            --bg: #f0f2f5;
-        }
+        :root { --primary: #d32f2f; --whatsapp: #25d366; --bg: #f4f7f6; --card-bg: #ffffff; --text: #333; --border: #eee; }
+        body.dark-mode { --bg: #121212; --card-bg: #1e1e1e; --text: #e0e0e0; --border: #333; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; padding: 15px; color: var(--text); transition: 0.3s; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; position: relative; }
+        
+        /* Foto de Perfil */
+        .profile-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; }
+        #profileDisplay { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); background: #eee; }
+        .photo-input { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; font-size: 18px; }
+        #file-input { display: none; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
+        .logo-icv { max-width: 120px; margin-bottom: 5px; }
+        .brand-name { font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 20px; text-transform: uppercase; color: var(--primary); }
+        .form-group { text-align: left; margin-bottom: 12px; }
+        label { font-size: 0.65rem; font-weight: 700; color: #777; display: block; margin-bottom: 4px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 12px; font-size: 0.9rem; box-sizing: border-box; background: var(--card-bg); color: var(--text); }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .widget { padding: 10px; background: var(--bg); border-radius: 12px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+        .result-box { margin: 15px 0; padding: 18px; border-radius: 18px; font-weight: 800; font-size: 1.3rem; border: 3px solid transparent; }
+        
+        .mini-calendar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 10px 0; padding: 10px; background: var(--bg); border-radius: 15px; }
+        .day-box { padding: 8px 2px; border-radius: 8px; font-size: 0.65rem; font-weight: bold; color: white; }
+        
+        .btn { border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; transition: 0.2s; }
+        .btn-pdf { background-color: #333; }
+        .btn-ws { background-color: var(--whatsapp); }
+        .btn:active { transform: scale(0.98); }
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-        }
-
-        .logo-icv { max-width: 140px; margin-bottom: 5px; }
-        .brand-name { font-weight: 700; font-size: 0.8rem; color: #333; letter-spacing: 1px; margin-bottom: 25px; }
-
-        .form-group { text-align: left; margin-bottom: 15px; }
-        label { font-size: 0.75rem; font-weight: 700; color: #666; display: block; margin-bottom: 6px; text-transform: uppercase; }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        .result-box {
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 18px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            display: none;
-            border: 3px solid transparent;
-        }
-
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-
-        .btn {
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.3s;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-
-        .btn-pdf { background-color: #1a1a1a; color: white; }
-        .btn-ws { background-color: var(--whatsapp); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 0.75rem;
-            color: #aaa;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
+        .footer { margin-top: 20px; font-size: 0.7rem; color: #888; border-top: 1px solid var(--border); padding-top: 15px; }
         .insta { color: var(--primary); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="https://www.icv.cl/wp-content/uploads/2021/05/logo-icv.png" alt="ICV" class="logo-icv">
-    <div class="brand-name">INGENIERÍA CIVIL VICENTE</div>
-
-    <div class="form-group">
-        <label>Nombre del Colaborador</label>
-        <input type="text" id="nombre" placeholder="Tu nombre aquí" oninput="calcular()">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <img src="https://www.icv.cl/wp-content/uploads/2021/05/logo-icv.png" alt="ICV" class="logo-icv">
+        <button onclick="document.body.classList.toggle('dark-mode')" style="background:none; border:none; cursor:pointer; font-size: 1.2rem;">🌓</button>
+    </div>
+    
+    <div class="profile-container">
+        <img id="profileDisplay" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <label for="file-input" class="photo-input">+</label>
+        <input type="file" id="file-input" accept="image/*" onchange="loadPhoto(event)">
     </div>
 
-    <div class="form-group" style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-            <label>Sistema</label>
-            <select id="sistema" onchange="calcular()">
-                <option value="4">4x4</option>
-                <option value="7">7x7</option>
-                <option value="8">8x8</option>
-                <option value="10" selected>10x10</option>
-                <option value="14">14x14</option>
-            </select>
-        </div>
-        <div style="flex: 1;">
-            <label>Fecha 2026</label>
-            <input type="date" id="fecha" value="2026-01-01" onchange="calcular()">
-        </div>
+    <div class="brand-name">Ingeniería Civil Vicente</div>
+
+    <div class="form-group">
+        <label>Colaborador</label>
+        <input type="text" id="nombre" placeholder="Escribe tu nombre" oninput="calcular()">
+    </div>
+
+    <div class="form-group" style="display: flex; gap: 8px;">
+        <div style="flex: 1;"><label>Sistema</label><select id="sistema" onchange="calcular()"><option value="4">4x4</option><option value="7">7x7</option><option value="10" selected>10x10</option><option value="14">14x14</option></select></div>
+        <div style="flex: 1;"><label>Fecha 2026</label><input type="date" id="fecha" value="2026-01-01" onchange="calcular()"></div>
+    </div>
+
+    <div class="info-grid">
+        <div class="widget" id="contadorBajada">-</div>
+        <div class="widget" id="fechaEspecial">-</div>
     </div>
 
     <div id="resultado" class="result-box"></div>
 
-    <div class="btn-group">
-        <button class="btn btn-pdf" onclick="descargarPDF()">
-            <span>📄 Descargar PDF</span>
-        </button>
-        <button class="btn btn-ws" onclick="compartirWhatsApp()">
-            <span>💬 Enviar por WhatsApp</span>
-        </button>
-    </div>
+    <label>Ciclo de Turno (10 días):</label>
+    <div class="mini-calendar" id="miniCalendar"></div>
+
+    <button class="btn btn-pdf" onclick="descargarPDF()">📄 Guardar PDF</button>
+    <button class="btn btn-ws" onclick="compartirWhatsApp()">💬 Compartir Turno</button>
 
     <div class="footer">
-        <p>Control de Turnos Mineros - Versión General 2026</p>
-        <p>Creado por <a href="https://instagram.com/Otherbabu.u" class="insta">@Otherbabu.u</a></p>
+        <strong>@Otherbabu.u 2025</strong> | Faena 2026
     </div>
 </div>
 
 <script>
+    function loadPhoto(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('profileDisplay');
+            output.src = reader.result;
+            localStorage.setItem('userPhoto', reader.result);
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    window.onload = function() {
+        const savedPhoto = localStorage.getItem('userPhoto');
+        if (savedPhoto) document.getElementById('profileDisplay').src = savedPhoto;
+        calcular();
+    };
+
     function calcular() {
         const fechaInput = document.getElementById('fecha').value;
         const sistema = parseInt(document.getElementById('sistema').value);
-        const resDiv = document.getElementById('resultado');
-
         if (!fechaInput) return;
-
         const fechaObj = new Date(fechaInput + "T12:00:00");
-        const inicio2026 = new Date("2026-01-01T12:00:00"); // Día 1 de turno DIA
-
+        const inicio2026 = new Date("2026-01-01T12:00:00");
         const diffDias = Math.floor((fechaObj - inicio2026) / (1000*60*60*24));
-        const cicloCompleto = sistema * 4;
-        let pos = diffDias % cicloCompleto;
-        if (pos < 0) pos += cicloCompleto;
+        const cicloTotal = sistema * 4;
+        let pos = diffDias % cicloTotal;
+        if (pos < 0) pos += cicloTotal;
 
+        const resDiv = document.getElementById('resultado');
         resDiv.style.display = "block";
+        let estado = "";
 
         if (pos < sistema) {
-            actualizarUI("TURNO DÍA ☀️", "#fff3e0", "#ef6c00", "#ff9800");
+            estado = "TURNO DÍA ☀️"; actualizarUI(estado, "#fff3e0", "#ef6c00", "#ff9800");
+            document.getElementById('contadorBajada').innerText = `Bajas en: ${sistema - pos} días`;
         } else if (pos < sistema * 2) {
-            actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
+            estado = "DÍA LIBRE 🏠"; actualizarUI(estado, "#e8f5e9", "#2e7d32", "#4caf50");
+            document.getElementById('contadorBajada').innerText = `Subes en: ${(sistema * 2) - pos} días`;
         } else if (pos < sistema * 3) {
-            actualizarUI("TURNO NOCHE 🌙", "#e8eaf6", "#283593", "#3f51b5");
+            estado = "TURNO NOCHE 🌙"; actualizarUI(estado, "#e8eaf6", "#283593", "#3f51b5");
+            document.getElementById('contadorBajada').innerText = `Bajas en: ${(sistema * 3) - pos} días`;
         } else {
-            actualizarUI("DÍA LIBRE 🏠", "#e8f5e9", "#2e7d32", "#4caf50");
-        }
-    }
-
-    function actualizarUI(texto, bg, color, border) {
-        const resDiv = document.getElementById('resultado');
-        resDiv.innerText = texto;
-        resDiv.style.backgroundColor = bg;
-        resDiv.style.color = color;
-        resDiv.style.borderColor = border;
-    }
-
-    function descargarPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const nombre = document.getElementById('nombre').value || "Trabajador";
-        const fecha = document.getElementById('fecha').value;
-        const turno = document.getElementById('resultado').innerText;
-        
-        doc.setFillColor(211, 47, 47);
-        doc.rect(0, 0, 210, 30, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(18);
-        doc.text("INGENIERÍA CIVIL VICENTE - TURNOS 2026", 20, 20);
-        
-        doc.setTextColor(40, 40, 40);
-        doc.setFontSize(12);
-        doc.text(`Colaborador: ${nombre.toUpperCase()}`, 20, 50);
-        doc.text(`Fecha: ${fecha}`, 20, 60);
-        doc.setFontSize(16);
-        doc.text(`ESTADO: ${turno}`, 20, 80);
-        
-        doc.setFontSize(10);
-        doc.text("Generado por @Otherbabu.u", 20, 110);
-        doc.save(`Turno_ICV_${nombre}.pdf`);
-    }
-
-    function compartirWhatsApp() {
-        const nombre = document.getElementById('nombre').value || "compañero";
-        const fecha = document.getElementById('fecha').value;
-        const turno = document.getElementById('resultado').innerText;
-        const sistema = document.getElementById('sistema').value;
-
-        const mensaje = encodeURIComponent(
-            `*ICV - Turnos 2026*\n\n` +
-            `Hola, soy *${nombre}*. Mi estado para el día *${fecha}* en sistema *${sistema}x${sistema}* es:\n\n` +
-            `📍 *${turno}*\n\n` +
-            `_Generado por @Otherbabu.u_`
-        );
-        window.open(`https://api.whatsapp.com/send?text=${mensaje}`);
-    }
-
-    window.onload = calcular;
-</script>
-
-</body>
-</html>
+            estado = "DÍA LIBRE 🏠"; actualizarUI(estado, "#e8f5e9", "#2e7d32", "#4caf50");
+            document.getElementById('contadorBajada').innerText = `Sub
